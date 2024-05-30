@@ -3,7 +3,6 @@
 import React from 'react';
 
 interface ProjectData {
-  // Define the shape of the data you expect from the API
   projects: any[];
 }
 
@@ -25,7 +24,7 @@ const fetchProjectData = async (): Promise<ProjectData> => {
     TotalSubscribers: el.TotalSubscribers,
     TotalLocalSubscribers: el.TotalLocalSubscribers || 0,
     WinningPercentage: el.TargetHousingUnits / ((el.TotalSubscribers - el.TotalLocalSubscribers || 0)) * 100,
-  }));
+  })).sort((a: any,b: any) => b.WinningPercentage - a.WinningPercentage);
 };
 
 const Home = async () => {
@@ -34,7 +33,7 @@ const Home = async () => {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4 text-black">Projects Data</h1>
-      <div className="overflow-x-auto">
+      <div className="hidden md:block overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200 text-black">
           <thead>
             <tr>
@@ -67,6 +66,23 @@ const Home = async () => {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="block md:hidden">
+        {data.map((project: any, index: any) => (
+          <div key={index} className="mb-4 p-4 bg-white border border-gray-200 text-black rounded-lg shadow-md">
+            <div className="mb-2 text-black"><strong>Application Start Date:</strong> {new Date(project.ApplicationStartDate).toLocaleDateString()}</div>
+            <div className="mb-2 text-black"><strong>Application End Date:</strong> {new Date(project.ApplicationEndDate).toLocaleDateString()}</div>
+            <div className="mb-2 text-black"><strong>Process Name:</strong> {project.ProcessName}</div>
+            <div className="mb-2 text-black"><strong>City Description:</strong> {project.CityDescription}</div>
+            <div className="mb-2 text-black"><strong>Contractor Description:</strong> {project.ContractorDescription}</div>
+            <div className="mb-2 text-black"><strong>Target Housing Units:</strong> {project.TargetHousingUnits}</div>
+            <div className="mb-2 text-black"><strong>Price Per Unit:</strong> {project.PricePerUnit}</div>
+            <div className="mb-2 text-black"><strong>Total Subscribers:</strong> {project.TotalSubscribers}</div>
+            <div className="mb-2 text-black"><strong>Total Local Subscribers:</strong> {project.TotalLocalSubscribers}</div>
+            <div className="mb-2 text-black"><strong>Winning Percentage:</strong> {project.WinningPercentage.toFixed(2)}%</div>
+          </div>
+        ))}
       </div>
     </div>
   );

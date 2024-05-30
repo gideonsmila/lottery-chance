@@ -23,7 +23,7 @@ const fetchProjectData = async (): Promise<ProjectData> => {
     PricePerUnit: el.PricePerUnit,
     TotalSubscribers: el.TotalSubscribers,
     TotalLocalSubscribers: el.TotalLocalSubscribers || 0,
-    WinningPercentage: el.TargetHousingUnits / ((el.TotalSubscribers - el.TotalLocalSubscribers || 0)) * 100,
+    WinningPercentage: (el.TargetHousingUnits - el.HousingUnitsForHandicapped - el.LocalHousing) / ((el.TotalSubscribers - el.TotalLocalSubscribers || 0)) * 100,
   })).sort((a: any,b: any) => b.WinningPercentage - a.WinningPercentage);
 };
 

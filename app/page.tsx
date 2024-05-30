@@ -12,7 +12,7 @@ const fetchProjectData = async (): Promise<ProjectData> => {
     throw new Error('Failed to fetch data');
   }
   const data: any = await res.json();
-
+//
   const reducedDataByCity = data.ProjectItems.reduce((acc: any, cur: any) => {
       const city = acc.find((el: any) => el.CityDescription === cur.CityDescription )
       if(city) {

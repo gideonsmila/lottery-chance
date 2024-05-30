@@ -12,8 +12,25 @@ const fetchProjectData = async (): Promise<ProjectData> => {
     throw new Error('Failed to fetch data');
   }
   const data: any = await res.json();
+
+  const reducedDataByCity = data.ProjectItems.reduce((acc: any, cur: any) => {
+      const city = acc.find((el: any) => el.CityDescription === cur.CityDescription )
+      if(city) {
+        city.TargetHousingUnits = city.TargetHousingUnits + cur.TargetHousingUnits
+        city.TotalSubscribers = city.TotalSubscribers + cur.TotalSubscribers;
+        city.TotalLocalSubscribers = city.TotalLocalSubscribers + (cur.TotalLocalSubscribers || 0);
+        city.HousingUnitsForHandicapped = city.HousingUnitsForHandicapped + (cur.HousingUnitsForHandicapped || 0);
+        city.LocalHousing = city.LocalHousing + (cur.LocalHousing || 0)
+      }
+      else {
+        acc.push(cur)
+      }
+      return acc;
+  },[])
+
+  
  
-  return data.ProjectItems.map((el: any) => ({
+  return reducedDataByCity.map((el: any) => ({
     ApplicationStartDate: el.ApplicationStartDate,
     ApplicationEndDate: el.ApplicationEndDate,
     ProcessName: el.ProcessName,
@@ -31,7 +48,13 @@ const Home = async () => {
   const data: any = await fetchProjectData();
 
   return (
-    <div className="p-4">
+    <div>
+       <header className="mb-4 text-center">
+        <h1 className="text-2xl font-bold mb-2 text-smoke-white">מחיר למשתכן אחוזי זכייה</h1>
+      </header>
+      <div className="p-4">
+      
+
       <h1 className="text-2xl font-bold mb-4 text-black">Projects Data</h1>
       <div className="hidden md:block overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200 text-black">
@@ -61,7 +84,7 @@ const Home = async () => {
                 <td className="py-2 px-4 border-b text-black">{project.PricePerUnit}</td>
                 <td className="py-2 px-4 border-b text-black">{project.TotalSubscribers}</td>
                 <td className="py-2 px-4 border-b text-black">{project.TotalLocalSubscribers}</td>
-                <td className="py-2 px-4 border-b text-black">{project.WinningPercentage.toFixed(2)}%</td>
+                <td className="py-2 px-4 border-b text-lime-700 font-bold">{project.WinningPercentage.toFixed(2)}%</td>
               </tr>
             ))}
           </tbody>
@@ -80,11 +103,13 @@ const Home = async () => {
             <div className="mb-2 text-black"><strong>Price Per Unit:</strong> {project.PricePerUnit}</div>
             <div className="mb-2 text-black"><strong>Total Subscribers:</strong> {project.TotalSubscribers}</div>
             <div className="mb-2 text-black"><strong>Total Local Subscribers:</strong> {project.TotalLocalSubscribers}</div>
-            <div className="mb-2 text-black"><strong>Winning Percentage:</strong> {project.WinningPercentage.toFixed(2)}%</div>
+            <div className="mb-4 text-lime-700 font-bold "><strong>Winning Percentage:</strong> {project.WinningPercentage.toFixed(2)}%</div>
           </div>
         ))}
       </div>
     </div>
+    </div>
+   
   );
 };
 

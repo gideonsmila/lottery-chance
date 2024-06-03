@@ -7,7 +7,11 @@ interface ProjectData {
 }
 
 const fetchProjectData = async (): Promise<ProjectData> => {
-  const res = await fetch('https://www.dira.moch.gov.il/api/Invoker?method=Projects&param=%3FProjectStatus%3D4%26Entitlement%3D1%26PageNumber%3D1%26PageSize%3D50%26IsInit%3Dtrue%26');
+  const res = await fetch('https://www.dira.moch.gov.il/api/Invoker?method=Projects&param=%3FProjectStatus%3D4%26Entitlement%3D1%26PageNumber%3D1%26PageSize%3D50%26IsInit%3Dtrue%26', {
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+    }
+  });
   if (!res.ok) {
     throw new Error('Failed to fetch data');
   }
